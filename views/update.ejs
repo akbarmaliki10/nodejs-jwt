@@ -1,0 +1,46 @@
+<%- include('partials/header'); -%>
+
+<form>
+    <h2>Update data diri</h2>
+    <label for="emailLama">Email lama</label>
+    <input type="text" name="emailLama" readonly value="<%= user.email  %>" style="background : #808080;">
+    <label for="email">Email</label>
+    <input type="text" name="email" required>
+    <div class="email error"></div>
+    <button>Update</button>
+</form>
+
+
+<script>
+    const form = document.querySelector('form');
+    const emailError = document.querySelector(".email.error");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        emailError.textContent = "";
+
+        const email = form.email.value;
+        const emailLama = form.emailLama.value;
+
+        try {
+            const res = await fetch("/update", {
+                method: "POST",
+                body: JSON.stringify({ email, emailLama}),
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await res.json();
+
+            if (data.errors) {
+                emailError.textContent = data.errors.email;
+            }
+            if (data.user) {
+                location.assign('/profile');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+</script>
+
+<%- include('partials/footer'); -%>

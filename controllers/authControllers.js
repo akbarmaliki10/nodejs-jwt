@@ -76,3 +76,44 @@ module.exports.logout_get = (req,res) => {
     res.cookie('jwt', "", {maxAge: 1});
     res.redirect("/login");
 }
+
+
+module.exports.profile = async (req,res) => {
+    res.render("profile");
+};
+
+module.exports.update_get = async (req,res) => {
+    res.render("update");
+};
+
+module.exports.update_post = async (req,res) => {
+    const { email, emailLama } = req.body;
+
+    try {
+        const user = await User.findOneAndUpdate({email: emailLama, email: email});
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge : maxAge * 1000});
+        res.status(200).json({user: user._id});
+    } catch (error) {
+        const errors = errorHandler(error);
+        res.status(400).json({errors});
+    }
+};
+
+
+module.exports.remove_get = async (req,res) => {
+    res.render("remove");
+};
+
+module.exports.remove_post = async (req,res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOneAndDelete({email: email});
+        const token = createToken(user._id);
+        res.cookie('jwt', "", {maxAge: 1});     
+        res.render("login");
+    } catch (error) {
+        const errors = errorHandler(error);
+        res.status(400).json({errors});
+    }
+};
