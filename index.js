@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose  = require('mongoose');
 const authRoutes = require('./routes/auth')
+const notesRoutes = require('./routes/notes')
 const path = require('path');
 const cookieParser = require("cookie-parser");
 const { requireAuth, checkUser } = require("./middleware/authMiddleware")
@@ -32,3 +33,4 @@ app.get('/testhalaman', requireAuth, (req,res) => {
     res.render('smoothies');
 });
 app.use(authRoutes);
+app.use(notesRoutes);
